@@ -7,25 +7,17 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<div class="row">
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
-        <img src="./logo.png" height="100" alt="logo">
-    </div>
-    <div class="col-md-4"></div>
 
-</div>
-<div class="col-md-2"></div>
+ <div id="gamecanvas" style="position: center"></div>
 
-<div class="col-md-8">
-    <div id="mycanvas"></div>
-    <div class="row">
-        <div class="col-xs-6" id="editorsplace">
-            <div id="editor" style="border: 1px solid black">
+
+        
+ <div id="editor"  style="visibility: hidden" >
 import pygame
 from random import randint
 
@@ -50,7 +42,7 @@ class button():
                          (self.x, self.y, self.width, self.height), 0)
 
         if self.text != '':
-            font = pygame.font.SysFont('comicsans', 25)
+            font = pygame.font.SysFont('comicsans', 20)
             text = font.render(self.text, 1, (0, 0, 0))
             win.blit(text,
                      (self.x + (self.width / 2 - text.get_width() / 2),
@@ -67,16 +59,16 @@ class button():
 
 pygame.init()
 pygame.display.set_caption('Sorting Algorithm Visualization')
-screen_width, screen_height = 1200, 720
+screen_width, screen_height =1600, 720
 screen = pygame.display.set_mode((screen_width, screen_height + 180))
 clock = pygame.time.Clock()
-font = pygame.font.SysFont(None, 30)
+font = pygame.font.SysFont(None, 25)
 run = True
 y = screen_height
 fps = 60
 speed = 100
 #length of arr-------------------------------------------------------------------
-n = 100  
+n = 10
 #length of arr--------------------------------------------------------------------
 
 distance = screen_width / n
@@ -113,7 +105,6 @@ heap_sort_button = button(white, 800, screen_height + 100, 130, 20,
                           'Heap Sort')
 theme_change_button = button(white, 0, screen_height + 160, 50, 20, theme)
 
-
 def massage_to_screen(msg, color, msg_width, msg_height):
     screen_text = font.render(msg, True, color)
     screen.blit(screen_text, [msg_width, msg_height])
@@ -132,9 +123,8 @@ def draw():
         pygame.draw.rect(screen, arr_colors[i],
                          pygame.Rect(i * distance, y, width, -arr[i]))
 
-    massage_to_screen('Speed: ' + str(200 - speed), white, 50,
-                      screen_height + 90)
-    massage_to_screen('Length: ' + str(n), white, 200, screen_height + 90)
+    massage_to_screen('Speed: ' + str(200 - speed), white, 30,screen_height + 90)
+    massage_to_screen('Length: ' + str(n), white, 180, screen_height + 90)
 
     speed_up_button.draw(screen)
     speed_down_button.draw(screen)
@@ -194,9 +184,14 @@ def draw():
             if speed_down_button.isOver(pos) and speed < 200:
                 speed += 10
 
-            if length_up_button.isOver(pos) and n < 300:
+            if length_up_button.isOver(pos) and n < 800:
                 a = True
-                n += 1
+                if n <20:
+                    n += 1
+                elif n >=300:
+                    n+=100
+                else:
+                    n += 10
                 distance = screen_width / n
                 width = distance - 1
                 arr = [randint(1, screen_height) for p in range(0, n)]
@@ -205,7 +200,12 @@ def draw():
 
             if length_down_button.isOver(pos) and n > 2:
                 a = True
-                n -= 1
+                if n <=20:
+                    n -= 1
+                elif n>300:
+                    n-=100
+                else:
+                    n-=10
                 distance = screen_width / n
                 width = distance - 1
                 arr = [randint(1, screen_height) for p in range(0, n)]
@@ -221,12 +221,12 @@ def draw():
                 arr_colors = [white] * n
 
 
+
 def refill():
     screen.fill(black)
     draw()
     pygame.display.update()
     pygame.time.wait(speed)
-
 
 def buble_sort(arr):
     for i in range(1, len(arr)):
@@ -400,31 +400,14 @@ while run:
     draw()
     pygame.display.flip()
     clock.tick(fps)
-
 </div>
-        </div>
-    </div>
-    <div class="col-md-5"></div>
-    <a class="btn btn-primary col-md-2" id="runbutton">Run code<span class="glyphicon glyphicon-play"
-                                                                     aria-hidden="true"></span></a>
+
   
 
-</div>
-<div class="col-md-2"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js" type="text/javascript" charset="utf-8"></script>
-<script>
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/chrome");
-    editor.session.setMode("ace/mode/python");
-</script>
 
 
-<script>
-    document.getElementById("editor").style['width'] = document.getElementById("editorsplace").offsetWidth;
-    document.getElementById("editor").style['height'] = 0.7 * window.innerHeight;
-    document.getElementById("editor").style['margin'] = "0 auto";
-    document.getElementById("output").style['height'] = 0.7 * window.innerHeight;
-</script>
+
 <script>
     var basePath = 'https://cdn.rawgit.com/Petlja/pygame4skulpt/3435847b/pygame/';
     Sk.externalLibraries = {
@@ -463,111 +446,11 @@ while run:
         },
     };
 
-    function resetTarget() {
-        var selector = Sk.TurtleGraphics.target;
-        var target = typeof selector === "string" ? document.getElementById(selector) : selector;
-        // clear canvas container
-        while (target.firstChild) {
-            target.removeChild(target.firstChild);
-        }
-        return target;
-    }
-
-    function createArrows(div) {
-        var arrows = new Array(4);
-        var direction = ["left", "right", "up", "down"];
-        $(div).addClass("d-flex justify-content-center");
-        for (var i = 0; i < 4; i++) {
-            arrows[i] = document.createElement("span");
-            div.appendChild(arrows[i]);
-            $(arrows[i]).addClass("btn btn-primary btn-arrow");
-            var ic = document.createElement("i");
-            $(ic).addClass("fas fa-arrow-" + direction[i]);
-            arrows[i].appendChild(ic);
-        }
-
-
-        var swapIcon = function (id) {
-            $(arrows[id].firstChild).removeClass("fa-arrow-" + direction[id]).addClass("fa-arrow-circle-" + direction[id]);
-        }
-
-        var returnIcon = function (id) {
-            $(arrows[id].firstChild).removeClass("fa-arrow-circle-" + direction[id]).addClass("fa-arrow-" + direction[id]);
-        }
-
-        $(arrows[0]).on('mousedown', function () {
-            Sk.insertEvent("left");
-            swapIcon(0);
-        });
-        $(arrows[0]).on('mouseup', function () {
-            returnIcon(0);
-        });
-        $(arrows[1]).on('mousedown', function () {
-            Sk.insertEvent("right");
-            swapIcon(1);
-        });
-        $(arrows[1]).on('mouseup', function () {
-            returnIcon(1);
-        });
-        $(arrows[2]).on('mousedown', function () {
-            Sk.insertEvent("up");
-            swapIcon(2);
-        });
-        $(arrows[2]).on('mouseup', function () {
-            returnIcon(2);
-        });
-        $(arrows[3]).on('mousedown', function () {
-            Sk.insertEvent("down");
-            swapIcon(3);
-        });
-        $(arrows[3]).on('mouseup', function () {
-            returnIcon(3);
-        });
-
-        $(document).keydown(function (e) {
-            switch (e.which) {
-                case 37:
-                    swapIcon(0);
-                    break;
-                case 38:
-                    swapIcon(2);
-                    break;
-                case 39:
-                    swapIcon(1);
-                    break;
-                case 40:
-                    swapIcon(3);
-                    break;
-            }
-        });
-
-        $(document).keyup(function (e) {
-            switch (e.which) {
-                case 37:
-                    returnIcon(0);
-                    break;
-                case 38:
-                    returnIcon(2);
-                    break;
-                case 39:
-                    returnIcon(1);
-                    break;
-                case 40:
-                    returnIcon(3);
-                    break;
-            }
-        });
-    };
 
     function printString(text) {
         var output = document.getElementById("output");
         text = text.replace(/</g, '&lt;');
         output.innerHTML = output.innerHTML + text;
-    }
-
-    function clearOutput() {
-        var output = document.getElementById("output");
-        output.innerHTML = '';
     }
 
     function builtinRead(x) {
@@ -577,118 +460,37 @@ while run:
     }
 
     function addModal() {
-        $(Sk.main_canvas).css("border", "1px solid blue");
-        var currentTarget = resetTarget();
 
-        var div1 = document.createElement("div");
-        currentTarget.appendChild(div1);
-        $(div1).addClass("modal");
-        $(div1).css("text-align", "center");
-
-        var btn1 = document.createElement("span");
-        $(btn1).addClass("btn btn-primary btn-sm pull-right");
-        var ic = document.createElement("i");
-        $(ic).addClass("fas fa-times");
-        btn1.appendChild(ic);
-
-        $(btn1).on('click', function (e) {
-            Sk.insertEvent("quit");
-        });
-
-        var div2 = document.createElement("div");
-        $(div2).addClass("modal-dialog modal-lg");
-        $(div2).css("display", "inline-block");
-        $(div2).width(self.width + 42);
-        $(div2).attr("role", "document");
-        div1.appendChild(div2);
-
-        var div3 = document.createElement("div");
-        $(div3).addClass("modal-content");
-        div2.appendChild(div3);
-
-        var div4 = document.createElement("div");
-        $(div4).addClass("modal-header d-flex justify-content-between");
-        var div5 = document.createElement("div");
-        $(div5).addClass("modal-body");
-        var div6 = document.createElement("div");
-        $(div6).addClass("modal-footer");
-        var div7 = document.createElement("div");
-        $(div7).addClass("col-md-8");
-        var div8 = document.createElement("div");
-        $(div8).addClass("col-md-4");
-        var header = document.createElement("h5");
-        Sk.title_container = header;
-        $(header).addClass("modal-title");
-
-
-        div3.appendChild(div4);
-        div3.appendChild(div5);
-        div3.appendChild(div6);
-
-        div4.appendChild(header);
-        div4.appendChild(btn1);
-        // div7.appendChild(header);
-        // div8.appendChild(btn1);
-
-        div5.appendChild(Sk.main_canvas);
-
-        createArrows(div6);
-        $(div1).modal({
-            backdrop: 'static',
-            keyboard: false
-        });
+        var div1 = document.getElementById("gamecanvas");
+        div1.appendChild(Sk.main_canvas);
+        div1.a
+        
     }
 
-    function readTextFile(file)
-{
-    var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file, false);
-    rawFile.onreadystatechange = function ()
-    {
-        if(rawFile.readyState === 4)
-        {
-            if(rawFile.status === 200 || rawFile.status == 0)
-            {
-                var allText = rawFile.responseText;
-                alert(allText);
-            }
-        }
-    }
-    rawFile.send(null);
-}
+
 
     function runCode() {
         Sk.main_canvas = document.createElement("canvas");
-        Sk.quitHandler = function () {
-            $('.modal').modal('hide');
-        };
         addModal();
         var prog = ace.edit("editor").getValue();
-
+        
         Sk.misceval.asyncToPromise(function () {
             try {
                 return Sk.importMainWithBody("<stdin>", false, prog, true);
-            } catch (e) {
+            } 
+            catch (e) {
                 alert(e)
             }
         });
     }
 
-
     (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
     Sk.configure({read: builtinRead, output: printString});
-    $("#runbutton").click(function () {
-        runCode();
-    });
+   
+    runCode();
+    
 
-    var sourcePath = "./test/snake.py";
-    if (window.location.search.substring(1).length > 0) {
-        sourcePath = "./test/" + window.location.search.substring(1)
-    }
-    $.get(sourcePath, function (data) {
-        editor.setValue(data, -1);
-    });
-
+  
 </script>
 </body>
 </html>
